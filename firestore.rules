@@ -1,0 +1,71 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isReportOwner() {
+      return isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    function isValidReportType() {
+      return request.resource.data.type in ['lost', 'found'];
+    }
+
+    function aiFieldsUnchanged() {
+      return request.resource.data.aiStatus == resource.data.aiStatus
+        && request.resource.data.aiAttributes == resource.data.aiAttributes;
+    }
+
+    function userIdUnchanged() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    // Exact coordinates must never live on reports. Clients may only
+    // store a coarse locationText such as "Near the library".
+    function hasNoExactLocationKeys(data) {
+      return !data.keys().hasAny([
+        'latitude',
+        'longitude',
+        'geoPoint',
+        'exactLocation'
+      ]);
+    }
+
+    match /reports/{reportId} {
+      allow read: if isReportOwner();
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && isValidReportType()
+        && request.resource.data.aiStatus == 'pending'
+        && request.resource.data.aiAttributes == null
+        && hasNoExactLocationKeys(request.resource.data);
+
+      allow update: if isReportOwner()
+        && userIdUnchanged()
+        && aiFieldsUnchanged()
+        && hasNoExactLocationKeys(request.resource.data);
+
+      allow delete: if isReportOwner();
+    }
+
+    match /matches/{matchId} {
+      allow read, write: if false;
+    }
+
+    match /verifications/{verificationId} {
+      allow read, write: if false;
+    }
+
+    match /handovers/{handoverId} {
+      allow read, write: if false;
+    }
+
+    match /foundLocations/{foundReportId} {
+      allow read, write: if false;
+    }
+  }
+}
