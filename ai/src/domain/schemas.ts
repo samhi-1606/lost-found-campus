@@ -33,9 +33,13 @@ export const itemAttributesSchema = z.object({
 export const imageAttributesSchema = z.object({
   hasImage: z.boolean(),
   category: z.string().nullable().default(null),
+  brand: z.string().nullable().default(null),
+  model: z.string().nullable().default(null),
   colors: z.array(z.string()).default([]),
+  material: z.string().nullable().default(null),
   detectedText: z.array(z.string()).default([]),
   distinguishingFeatures: z.array(z.string()).default([]),
+  mentionedByUserNotVisible: z.array(z.string()).default([]),
   confidence: confidenceSchema,
 });
 

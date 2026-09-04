@@ -19,6 +19,7 @@ import {
   ATTRIBUTE_EXTRACTION_SYSTEM_PROMPT,
   buildAttributeExtractionUserPrompt,
 } from '../prompts/attributeExtraction.js';
+import { extractJsonObject } from '../utils/json.js';
 
 /** Thrown when the model output cannot be parsed/validated into ItemAttributes. */
 export class AttributeExtractionError extends Error {
@@ -69,6 +70,9 @@ export async function extractItemAttributes(
   });
 
   const json = extractJsonObject(result.content);
+  if (json === undefined) {
+    throw new AttributeExtractionError('Model output did not contain a valid JSON object.');
+  }
 
   const parsed = itemAttributesSchema.safeParse(json);
   if (!parsed.success) {
@@ -81,30 +85,4 @@ export async function extractItemAttributes(
   }
 
   return parsed.data;
-}
-
-/**
- * Safely locate and parse a single JSON object from model text.
- *
- * Tolerates common wrappers such as markdown code fences and leading prose
- * (e.g. "Here is the JSON:\n{ ... }") by preferring a fenced block if present,
- * then taking the outermost {...} span. Throws `AttributeExtractionError` when
- * no valid JSON object can be found.
- */
-function extractJsonObject(text: string): unknown {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate = fenced ? fenced[1] : text;
-
-  const start = candidate.indexOf('{');
-  const end = candidate.lastIndexOf('}');
-  if (start === -1 || end === -1 || end < start) {
-    throw new AttributeExtractionError('No JSON object found in the model output.');
-  }
-
-  const slice = candidate.slice(start, end + 1);
-  try {
-    return JSON.parse(slice);
-  } catch (err) {
-    throw new AttributeExtractionError('Model output was not valid JSON.', { cause: err });
-  }
 }

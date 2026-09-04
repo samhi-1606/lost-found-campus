@@ -49,10 +49,23 @@ export interface ItemAttributes {
 export interface ImageAttributes {
   hasImage: boolean;
   category: string | null;
+  /** Only when a brand is actually visible (logo/label/text); never inferred. */
+  brand: string | null;
+  /** Only when a model designator is actually visible; never inferred. */
+  model: string | null;
   colors: string[];
-  /** Text read from the image (labels, engravings), if any. */
+  material: string | null;
+  /** Text actually visible/readable in the image (labels, engravings), if any. */
   detectedText: string[];
+  /** Unique visual features observed, including visible damage and accessories. */
   distinguishingFeatures: string[];
+  /**
+   * Features the user's description mentions but that are NOT visually confirmed
+   * in the image. Preserves the observed-vs-claimed distinction; never merged
+   * into the observed feature lists.
+   */
+  mentionedByUserNotVisible: string[];
+  /** Confidence in the VISUAL analysis only (0..1) — not ownership/match/identity. */
   confidence: number;
 }
 
