@@ -3,7 +3,7 @@ const logger = require("firebase-functions/logger");
 const {analyzeItem} = require("../ai/analyzeItem");
 const {saveAiResult} = require("../data/reports");
 const {AI_STATUS, COLLECTIONS} = require("../lib/constants");
-
+const {runMatchingForReport} = require("../matching/runMatching");
 /**
  * Firestore trigger: reports/{reportId} on create.
  *
@@ -51,6 +51,7 @@ const onReportCreated = onDocumentCreated(
             AI_STATUS.COMPLETED,
             aiAttributes || null,
         );
+        await runMatchingForReport(reportId);
       } catch (error) {
         logger.error("Report AI processing failed", {
           reportId,
