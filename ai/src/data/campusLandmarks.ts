@@ -1,32 +1,71 @@
 /**
  * Trusted campus landmark reference data.
  *
- * =====================  PLACEHOLDER — NOT REAL DATA  =====================
- * The real campus landmark dataset will be supplied by the team later. This
- * file intentionally ships an EMPTY list: no landmarks, no coordinates, no
- * invented places. Location normalization treats this data as authoritative,
- * so until it is populated every AI suggestion will resolve to "unmatched".
+ * Populated with the 7 landmarks confirmed by the team's UI prototype. Location
+ * normalization treats this data as authoritative; the AI can only suggest one
+ * of these existing landmarks, never invent a new one.
  *
  * SECURITY: a `CampusLandmark` is COARSE reference data only. It deliberately
  * has NO latitude/longitude. Exact coordinates belong to the later
  * verified-location flow (`prepareVerifiedLocationResponse`), never here.
- * =========================================================================
+ *
+ * Aliases are conservative linguistic variations of the confirmed names only —
+ * no invented physical features (e.g. "library steps", "north library").
  */
 
 export interface CampusLandmark {
-  /** Stable identifier, e.g. "main-library". */
+  /** Stable identifier, e.g. "main-gate". */
   id: string;
-  /** Canonical display name, e.g. "Main Library". */
+  /** Canonical display name, e.g. "Main Gate". */
   name: string;
-  /** Alternative names/phrases users might type, e.g. ["central library", "lib"]. */
+  /** Alternative names/phrases users might type, e.g. ["main entrance", "front gate"]. */
   aliases: string[];
-  /** Coarse zone/area label, e.g. "Academic Zone". */
+  /** Coarse zone/area label, e.g. "entrance". */
   zone: string;
 }
 
-/**
- * Empty placeholder. Populate with the team's trusted dataset (or inject a
- * landmark list into the normalization service). Do NOT add invented landmarks
- * or coordinates here.
- */
-export const CAMPUS_LANDMARKS: CampusLandmark[] = [];
+/** The 7 confirmed campus landmarks. No coordinates; coarse zones only. */
+export const CAMPUS_LANDMARKS: CampusLandmark[] = [
+  {
+    id: 'library',
+    name: 'Library',
+    aliases: ['lib', 'the library'],
+    zone: 'academic',
+  },
+  {
+    id: 'student-services',
+    name: 'Student Services',
+    aliases: ['student service', 'student services'],
+    zone: 'services',
+  },
+  {
+    id: 'reception',
+    name: 'Reception',
+    aliases: ['reception desk', 'the reception'],
+    zone: 'services',
+  },
+  {
+    id: 'security',
+    name: 'Security',
+    aliases: ['security office'],
+    zone: 'security',
+  },
+  {
+    id: 'main-gate',
+    name: 'Main Gate',
+    aliases: ['main entrance', 'front gate'],
+    zone: 'entrance',
+  },
+  {
+    id: 'cafeteria',
+    name: 'Cafeteria',
+    aliases: ['canteen', 'cafe'],
+    zone: 'food',
+  },
+  {
+    id: 'main-campus-security-desk',
+    name: 'Main Campus Security Desk',
+    aliases: ['security desk', 'campus security desk', 'main security desk'],
+    zone: 'security',
+  },
+];
