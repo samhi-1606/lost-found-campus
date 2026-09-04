@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+
+# Never commit real secrets. Only .env.example (names only) belongs in git.
+.env
+.env.local
+.env.*.local
