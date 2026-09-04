@@ -92,8 +92,16 @@ export interface LocationResult {
 /** Raw similarity signals produced by the AI item comparison (AI, reasoning). */
 export interface AIComparison {
   attributeSimilarity: number;
+  /** Attributes that agree (generic and specific alike). */
   matchingFeatures: string[];
+  /** Attributes that actively disagree (both sides stated, and they differ). */
   conflictingFeatures: string[];
+  /** Attributes that could not be compared because data was missing on a side. */
+  unknownAttributes: string[];
+  /** High-value agreements: serials, engravings, unique marks, model, brand, visible text. */
+  distinctiveMatches: string[];
+  /** High-value disagreements: conflicting serials/model/brand/unique marks. */
+  distinctiveConflicts: string[];
   /** How plausible the coarse locations are for the same item (0..1). */
   locationPlausibility: number;
   /** How plausible the timestamps are for the same item (0..1). */
