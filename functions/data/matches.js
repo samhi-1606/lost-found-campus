@@ -19,6 +19,11 @@ function buildMatchDocument(input) {
     foundReportId: input.foundReportId,
     status: input.status || MATCH_STATUS.PENDING,
     score: input.score === undefined ? null : input.score,
+    confidence: input.confidence === undefined ? null : input.confidence,
+    matchedAttributes: input.matchedAttributes || [],
+    contradictions: input.contradictions || [],
+    reasons: input.reasons || [],
+    recommendation: input.recommendation || null,
     createdAt: input.createdAt || admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   };
