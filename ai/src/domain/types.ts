@@ -33,6 +33,8 @@ export interface Report {
 export interface ItemAttributes {
   category: string;
   brand: string | null;
+  /** Model designator/name (e.g. "iPhone 13 Pro"), distinct from brand and serials. */
+  model: string | null;
   colors: string[];
   material: string | null;
   /** Serials, engravings, asset tags, stickers, etc. */

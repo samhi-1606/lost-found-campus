@@ -21,6 +21,7 @@ export const confidenceSchema = z.number().min(0).max(1);
 export const itemAttributesSchema = z.object({
   category: z.string().min(1),
   brand: z.string().nullable().default(null),
+  model: z.string().nullable().default(null),
   colors: z.array(z.string()).default([]),
   material: z.string().nullable().default(null),
   identifiers: z.array(z.string()).default([]),
